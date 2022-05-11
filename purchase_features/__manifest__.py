@@ -17,13 +17,16 @@
     'version': '15.0.0.0.1',
 
     'depends': [
-        'purchase'
+        'purchase',
+        'stock'
     ],
 
     'data': [
         # 'security/security.xml',
         'security/ir.model.access.csv',
+        'data/ir_sequence_data.xml',
         'views/terminal.xml',
+        'views/realtime_cost.xml',
         'views/menuitem.xml',
     ],
 
