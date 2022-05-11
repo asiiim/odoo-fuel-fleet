@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_terminals_tree" model="ir.ui.view">
+        <field name="name">fuel.terminal.tree</field>
+        <field name="model">fuel.terminal</field>
+        <field name="priority">2</field>
+        <field name="arch" type="xml">
+            <tree string="Terminals" multi_edit="1" sample="1">
+                <field name="name" decoration-bf="1"/>
+                <field name="terminal_num"/>
+                <field name="terminal_name"/>
+                <field name="address"/>
+                <field name="city"/>
+                <field name="state_id"/>
+                <field name="zip"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_terminals_form" model="ir.ui.view">
+        <field name="name">fuel.terminal.form</field>
+        <field name="model">fuel.terminal</field>
+        <field name="arch" type="xml">
+            <form string="Terminal">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"
+                            placeholder="Example: Portland, OR Seaport..."/>
+                        </h1>
+                    </div>
+                    <group name="header">
+                        <group name="terminal_basic">
+                            <field name="terminal_num"/>
+                            <field name="terminal_name"/>
+                        </group>
+                        <group name="terminal_address">
+                            <field name="address"/>
+                            <field name="city"/>
+                            <field name="state_id" 
+                            options="{'no_open':True,'no_create': True}"/>
+                            <field name="zip"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="action_terminals" model="ir.actions.act_window">
+        <field name="name">Terminals</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fuel.terminal</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Terminal!
+            </p>
+        </field>
+    </record>
+    <record id="terminals_action_view_order_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_terminals_tree"/>
+        <field name="act_window_id" ref="action_terminals"/>
+    </record>
+    <record id="terminals_action_view_order_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_terminals_form"/>
+        <field name="act_window_id" ref="action_terminals"/>
+    </record>
+</odoo>

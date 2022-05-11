@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_terminalsd"
+        name="Terminals"
+        parent="purchase.menu_purchase_root"
+        action="purchase_features.action_terminals"
+        sequence="10"/>
+</odoo>
