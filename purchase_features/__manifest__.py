@@ -27,6 +27,8 @@
         'data/ir_sequence_data.xml',
         'views/terminal.xml',
         'views/realtime_cost.xml',
+        'views/res_partner.xml',
+        'views/purchase.xml',
         'views/menuitem.xml',
     ],
 

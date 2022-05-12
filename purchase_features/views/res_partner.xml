@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">fuel.terminal.tree</field>
+        <field name="model">fuel.terminal</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="vat" position="before">
+                <field id="is_carrier" class="o_text_overflow" name="name" default_focus="1"/>
+            </field>
+        </field>
+    </record>
+</odoo>
