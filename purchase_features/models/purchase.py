@@ -11,7 +11,7 @@ class PurchaseOrder(models.Model):
     carrier_id = fields.Many2one('res.partner', domain="[('is_carrier', '=', True)]",
         help="Carriers (trucking companies) approved to lift product from the specific Supplier at the specific Terminal")
     lift_datetime = fields.Datetime(
-        string='Life Date & Life Time', 
+        string='Lift Date & Time', 
         required=True, 
         index=True, 
         copy=False,

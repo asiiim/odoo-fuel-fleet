@@ -7,11 +7,11 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
 
-    is_carrier = fields.Many2one('res.partner', string='Is Carrier', default=False)
+    is_carrier = fields.Boolean(string='Is Carrier?', default=False)
 
-    @api.depends('is_carrier')
+    @api.onchange('is_carrier')
     def set_company(self):
         for rec in self:
             if rec.is_carrier:
-                rec.update({'company': True})
+                rec.update({'company_type': 'company'})
         
