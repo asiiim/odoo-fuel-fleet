@@ -17,6 +17,7 @@ class PurchaseOrder(models.Model):
         copy=False,
         tracking=True, 
         default=fields.Datetime.now)
+    
 
 
 class PurchaseOrderLine(models.Model):
@@ -28,3 +29,34 @@ class PurchaseOrderLine(models.Model):
         help='Volume of gallons at ambient temperature.')
     billed_gals = fields.Float('Billed Gallons', 
         help='Volume of gallons billed on invoice by Supplier.')
+
+    
+    # Get unit price form realtime data on change of terminal, lift datetime,
+    # supplier and product
+    # Extend the method onchange_product_id()
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        super(PurchaseOrderLine, self).onchange_product_id()
+        
+        if self.product_id and self.order_id.partner_id and \
+            self.order_id.terminal_id and \
+                self.order_id.lift_datetime:
+            
+            realtime_cost_records = self.env['product.realtime.cost'].search([
+                ('date_time', '<=', self.order_id.lift_datetime)
+            ], order='date_time desc')
+
+
+            cost_line = realtime_cost_records.\
+                mapped('cost_lines').filtered(
+                lambda x: x.supplier_id == self.order_id.partner_id \
+                    and x.terminal_id == self.order_id.terminal_id \
+                    and x.product_id == self.product_id
+            )
+            if cost_line:
+                cost = cost_line.mapped('cost')[0]
+            else:
+                cost = 0.0
+
+            print('------------------------------', cost)
+            self.price_unit = cost
