@@ -36,7 +36,6 @@ class PurchaseOrderLine(models.Model):
     # Extend the method onchange_product_id()
     @api.onchange('product_id')
     def onchange_product_id(self):
-        super(PurchaseOrderLine, self).onchange_product_id()
         
         if self.product_id and self.order_id.partner_id and \
             self.order_id.terminal_id and \
@@ -58,5 +57,8 @@ class PurchaseOrderLine(models.Model):
             else:
                 cost = 0.0
 
-            print('------------------------------', cost)
-            self.price_unit = cost
+            # This is done to get expected value in purchase line unit price
+            self.product_id.write({'standard_price': cost})
+        
+        result = super(PurchaseOrderLine, self).onchange_product_id()
+        return result
