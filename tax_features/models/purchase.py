@@ -18,6 +18,15 @@ class PurchaseOrder(models.Model):
             self.jurisdictions_id = self.partner_id.jurisdictions_id
     
 
+    has_orderline = fields.Boolean(compute='has_orderline', store=True)
+
+    @api.depends('order_line')
+    def has_orderline(self):
+        for rec in self:
+            if rec.order_line:
+                rec.update({'has_orderline': True})
+
+
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
@@ -30,19 +39,15 @@ class PurchaseOrderLine(models.Model):
         if self.product_id:
             # take product categ
             categ = self.product_id.categ_id
-            print('Categ::::::', categ.name)
 
             # take each jurisdiction selected in purchase order
             jurisdictions = self.order_id.jurisdictions_id
-            print('-----jurisdictions;;;;;;;;;', jurisdictions.ids)
-
+            
             # with those params lookup the tax tables
             taxes = self.env['account.tax'].search([
                 ('type_tax_use', '=', 'purchase'),
                 ('product_categ_id', '=', categ.id),
                 ('jurisdiction_id', 'in', jurisdictions.ids)])
-
-            print('------Taxes:::::::', taxes.mapped('name'))
 
             self.taxes_id = taxes
         return result

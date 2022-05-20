@@ -6,7 +6,10 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='date_planned_div']" position="after">
+                <!-- <field name="has_orderline" invisible="1"/> -->
                 <field name="jurisdictions_id" widget="many2many_tags"/>
+                
+                <!-- attrs="{'readonly': [('has_orderline', '=', True)]}" -->
             </xpath>
         </field>
     </record>

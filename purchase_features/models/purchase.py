@@ -17,6 +17,13 @@ class PurchaseOrder(models.Model):
         copy=False,
         tracking=True, 
         default=fields.Datetime.now)
+
+    
+    @api.onchange('lift_datetime', 'partner_id', 'terminal_id')
+    def update_price_unit(self):
+        if self.lift_datetime:
+            for line in self.order_line:
+                line._onchange_quantity()
     
 
 
@@ -31,34 +38,41 @@ class PurchaseOrderLine(models.Model):
         help='Volume of gallons billed on invoice by Supplier.')
 
     
+    # This method is called in other methods
+    def get_price_unit(self):
+        realtime_cost_records = self.env['product.realtime.cost'].search([
+                ('date_time', '<=', self.order_id.lift_datetime)
+            ], order='date_time desc')
+
+
+        cost_line = realtime_cost_records.\
+            mapped('cost_lines').filtered(
+            lambda x: x.supplier_id == self.order_id.partner_id \
+                and x.terminal_id == self.order_id.terminal_id \
+                and x.product_id == self.product_id
+        )
+        print('_____COstLINE___________', cost_line)
+
+        if cost_line:
+            return cost_line.mapped('cost')[0]
+        else:
+            return 0.0
+        
+
+    
     # Get unit price form realtime data on change of terminal, lift datetime,
     # supplier and product
-    # Extend the method onchange_product_id()
-    @api.onchange('product_id')
-    def onchange_product_id(self):
+
+    def _onchange_quantity(self):
+        # Overriding the method --------
+        result = super(PurchaseOrderLine, self)._onchange_quantity()
         
         if self.product_id and self.order_id.partner_id and \
             self.order_id.terminal_id and \
                 self.order_id.lift_datetime:
             
-            realtime_cost_records = self.env['product.realtime.cost'].search([
-                ('date_time', '<=', self.order_id.lift_datetime)
-            ], order='date_time desc')
+            cost = self.get_price_unit()
+            self.price_unit = cost
 
+        return
 
-            cost_line = realtime_cost_records.\
-                mapped('cost_lines').filtered(
-                lambda x: x.supplier_id == self.order_id.partner_id \
-                    and x.terminal_id == self.order_id.terminal_id \
-                    and x.product_id == self.product_id
-            )
-            if cost_line:
-                cost = cost_line.mapped('cost')[0]
-            else:
-                cost = 0.0
-
-            # This is done to get expected value in purchase line unit price
-            self.product_id.write({'standard_price': cost})
-        
-        result = super(PurchaseOrderLine, self).onchange_product_id()
-        return result
