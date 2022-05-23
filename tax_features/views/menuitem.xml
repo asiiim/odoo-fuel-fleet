@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_realtime_tax_rate"
+        name="Realtime Tax Rate"
+        parent="account.menu_finance_configuration"
+        action="tax_features.action_realtime_tax_rate"
+        sequence="10"/>
+</odoo>

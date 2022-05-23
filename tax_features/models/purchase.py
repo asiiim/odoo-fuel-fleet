@@ -12,6 +12,13 @@ class PurchaseOrder(models.Model):
         string='Destinations'
     )
 
+    @api.onchange('jurisdictions_id')
+    def update_taxes(self):
+        if self.jurisdictions_id:
+            for line in self.order_line:
+                line.onchange_product_id()
+
+
     @api.onchange('partner_id')
     def get_destinations(self):
         if self.partner_id:
