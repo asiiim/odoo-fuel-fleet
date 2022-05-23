@@ -21,9 +21,8 @@ class PurchaseOrder(models.Model):
     
     @api.onchange('lift_datetime', 'partner_id', 'terminal_id')
     def update_price_unit(self):
-        if self.lift_datetime:
-            for line in self.order_line:
-                line._onchange_quantity()
+        for line in self.order_line:
+            line._onchange_quantity()
     
 
 
@@ -51,7 +50,6 @@ class PurchaseOrderLine(models.Model):
                 and x.terminal_id == self.order_id.terminal_id \
                 and x.product_id == self.product_id
         )
-        print('_____COstLINE___________', cost_line)
 
         if cost_line:
             return cost_line.mapped('cost')[0]
