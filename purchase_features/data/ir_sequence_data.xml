@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequences for Realtime Product Cost -->
+        <record id="seq_product_realtime_cost" model="ir.sequence">
+            <field name="name">Product Realtime Cost</field>
+            <field name="code">product.realtime.cost</field>
+            <field name="prefix">PRC-</field>
+            <field name="padding">7</field>
+        </record>
+    </data>
+</odoo>
