@@ -40,7 +40,7 @@ class ProductRealtimeCost(models.Model):
         default=fields.Datetime.now)
 
     cost_lines = fields.One2many('product.realtime.cost.line', 'realcost_id',
-        string='Cost Details')
+        string='Cost Details', copy=True)
 
 
 class ProductRealtimeCostLine(models.Model):
@@ -82,6 +82,4 @@ class ProductRealtimeCostLine(models.Model):
         default=lambda self: self.env.company.currency_id.id)
 
     cost = fields.Monetary(
-        string='Cost',
-        tracking=True,
-        copy=False)
+        string='Cost')
