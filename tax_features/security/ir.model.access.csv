@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_tax_jurisdiction,access_tax_jurisdiction,model_tax_jurisdiction,,1,1,1,1
+access_realtime_tax_rate,access_realtime_tax_rate,model_realtime_tax_rate,,1,1,1,1
+access_realtime_tax_rate_line,access_realtime_tax_rate_line,model_realtime_tax_rate_line,,1,1,1,1
+

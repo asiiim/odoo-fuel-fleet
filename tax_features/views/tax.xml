@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account_tax_tree_inherit" model="ir.ui.view">
+        <field name="name">account.tax.tree.inherit</field>
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="account.view_tax_tree"/>
+        <field name="arch" type="xml">
+            <field name="sequence" position="after">
+                <field name="jurisdiction_id"/>
+            </field>
+            <field name="name" position="after">
+                <field name="code"/>
+                <field name="product_categ_id"/>
+                <field name="amount" string="Rate"/>
+            </field>
+            <field name="description" position="replace">
+                <field name="tx_type"/>
+            </field>
+            <field name="tax_scope" position="replace"/>
+        </field>
+    </record>
+    <record id="account_tax_form_inherit" model="ir.ui.view">
+        <field name="name">account.tax.form.inherit</field>
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="account.view_tax_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='definition']" position="before">
+                <page name="intro" string="Jurisdiction and Category">
+                    <group>
+                        <group>
+                            <field name='jurisdiction_id'/>
+                            <field name='code'/>
+                            <field name='product_categ_id'/>
+                        </group>
+                        <group>
+                            <field name='tx_type'/>
+                            <field name='reflink'/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
