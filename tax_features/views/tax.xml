@@ -10,7 +10,7 @@
             </field>
             <field name="name" position="after">
                 <field name="code"/>
-                <field name="product_categ_id"/>
+                <field name="product_categs_id" widget="many2many_tags"/>
                 <field name="amount" string="Rate"/>
             </field>
             <field name="description" position="replace">
@@ -30,7 +30,7 @@
                         <group>
                             <field name='jurisdiction_id'/>
                             <field name='code'/>
-                            <field name='product_categ_id'/>
+                            <field name='product_categs_id' widget="many2many_tags"/>
                         </group>
                         <group>
                             <field name='tx_type'/>
