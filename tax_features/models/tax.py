@@ -28,10 +28,10 @@ class AccountTax(models.Model):
 
 
     jurisdiction_id = fields.Many2one('tax.jurisdiction',
-        string='Juridisction', required=True, tracking=True,)
+        string='Juridisction', tracking=True,)
     
     
-    code = fields.Char('Code', copy=False, required=True, tracking=True,)
+    code = fields.Char('Code', copy=False, tracking=True,)
     _sql_constraints = [
         (
             'check_duplicate_code',
@@ -41,7 +41,10 @@ class AccountTax(models.Model):
     ]
 
     
-    product_categ_id = fields.Many2one('product.category', string="Product Category", 
+    # product_categ_id = fields.Many2one('product.category', string="Product Category", 
+    # tracking=True,
+    # help="Leave this field empty, if this tax is used as general")
+    product_categs_id = fields.Many2many('product.category', string="Product Category", 
     tracking=True,
     help="Leave this field empty, if this tax is used as general")
     tx_type = fields.Selection(
