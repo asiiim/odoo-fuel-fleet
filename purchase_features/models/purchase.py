@@ -2,6 +2,7 @@
 
 from datetime import datetime, timedelta
 from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
@@ -17,13 +18,24 @@ class PurchaseOrder(models.Model):
         copy=False,
         tracking=True, 
         default=fields.Datetime.now)
+    date_planned = fields.Datetime(default=fields.Datetime.now)
 
     
     @api.onchange('lift_datetime', 'partner_id', 'terminal_id')
     def update_price_unit(self):
         for line in self.order_line:
             line._onchange_quantity()
+
+        # Update receipt date
+        if self.lift_datetime:
+            self.update({'date_planned': self.lift_datetime})    
+
     
+    @api.onchange('date_planned')
+    def check_receipt_date(self):
+        if self.lift_datetime:
+            if self.date_planned < self.lift_datetime:
+                raise UserError(_('Receipt Date seems older than Lift datetime.'))
 
 
 class PurchaseOrderLine(models.Model):
