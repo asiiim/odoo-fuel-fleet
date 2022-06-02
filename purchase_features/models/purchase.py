@@ -48,14 +48,14 @@ class PurchaseOrderLine(models.Model):
     def get_realtime_cost(self):
         for rec in self:
             realtime_cost_records = self.env['product.realtime.cost'].search([
-                ('date_time', '<=', self.order_id.lift_datetime)
+                ('date_time', '<=', rec.order_id.lift_datetime)
             ], order='date_time desc')
 
             cost_line = realtime_cost_records.\
                 mapped('cost_lines').filtered(
-                lambda x: x.supplier_id == self.order_id.partner_id \
-                    and x.terminal_id == self.order_id.terminal_id \
-                    and x.product_id == self.product_id
+                lambda x: x.supplier_id == rec.order_id.partner_id \
+                    and x.terminal_id == rec.order_id.terminal_id \
+                    and x.product_id == rec.product_id
             )
             
             if cost_line:
