@@ -39,6 +39,18 @@ class PurchaseOrder(models.Model):
                 raise UserError(_('Receipt Date seems older than Lift datetime.'))
 
 
+    # Set the bill date (invoice_date) default value with liftdate time
+    def _prepare_invoice(self):
+        invoice_vals = super(PurchaseOrder, self)._prepare_invoice()
+
+        invoice_vals.update({
+            'invoice_date': self.lift_datetime
+        })
+
+        return invoice_vals
+
+
+
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
