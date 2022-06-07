@@ -13,10 +13,15 @@
                 placeholder="Carriers, Trucking Companies..."/>
                 <field name="lift_datetime"/>
             </field>
-
-            <xpath expr="//field[@name='order_line']/tree//field[@name='price_unit']" position="after">
+            <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" 
+            position="after">
+                <field name="bol_ref" placeholder="BOL#..."/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='price_unit']" 
+            position="after">
                 <field name="realtime_cost" invisible="1"/>
-                <button type="object" name="action_view_realtime_cost" icon="fa-external-link" class="text-danger"/>
+                <button type="object" name="action_view_realtime_cost" 
+                icon="fa-external-link" class="text-danger"/>
                 <!-- <button name="action_view_realtime_cost" string="Cost" class="oe_highlight" type="object" attrs="{'invisible': [('realtime_cost', '=', False)]}"/> -->
             </xpath>
         </field>

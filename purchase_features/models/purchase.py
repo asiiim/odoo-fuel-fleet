@@ -10,7 +10,8 @@ class PurchaseOrder(models.Model):
 
     terminal_id = fields.Many2one('fuel.terminal')
     carrier_id = fields.Many2one('res.partner', domain="[('is_carrier', '=', True)]",
-        help="Carriers (trucking companies) approved to lift product from the specific Supplier at the specific Terminal")
+        help='''Carriers (trucking companies) approved to lift product from the specific 
+            Supplier at the specific Terminal''')
     lift_datetime = fields.Datetime(
         string='Lift Date & Time', 
         required=True, 
@@ -41,12 +42,12 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
-    net_gals = fields.Float('Net Gallons', 
-        help='Volume of gallons temperature corrected to 60 degrees.')
-    gross_gals = fields.Float('Gross Gallons',
-        help='Volume of gallons at ambient temperature.')
-    billed_gals = fields.Float('Billed Gallons', 
-        help='Volume of gallons billed on invoice by Supplier.')
+    # net_gals = fields.Float('Net Gallons', 
+    #     help='Volume of gallons temperature corrected to 60 degrees.')
+    # gross_gals = fields.Float('Gross Gallons',
+    #     help='Volume of gallons at ambient temperature.')
+    # billed_gals = fields.Float('Billed Gallons', 
+    #     help='Volume of gallons billed on invoice by Supplier.')
     
     
     # -------------- View Realtime Cost------------------------------ #
@@ -76,14 +77,16 @@ class PurchaseOrderLine(models.Model):
 
     def action_view_realtime_cost(self):
 
-        result = self.env["ir.actions.actions"]._for_xml_id('purchase_features.action_product_realtime_cost')
+        result = self.env["ir.actions.actions"]._for_xml_id(
+            'purchase_features.action_product_realtime_cost')
         
         result['context'] = {'default_realtime_cost': self.realtime_cost.id}
         
         res = self.env.ref('purchase_features.view_product_realtime_cost_form', False)
         form_view = [(res and res.id or False, 'form')]
         if 'views' in result:
-            result['views'] = form_view + [(state,view) for state,view in result['views'] if view != 'form']
+            result['views'] = form_view + [(state,view) \
+                for state,view in result['views'] if view != 'form']
         else:
             result['views'] = form_view
         result['target'] = 'new'
@@ -116,7 +119,6 @@ class PurchaseOrderLine(models.Model):
     
     # Get unit price form realtime data on change of terminal, lift datetime,
     # supplier and product
-
     def _onchange_quantity(self):
         # Overriding the method --------
         result = super(PurchaseOrderLine, self)._onchange_quantity()
@@ -129,4 +131,14 @@ class PurchaseOrderLine(models.Model):
             self.price_unit = cost
 
         return
+
+
+    # This method is overriden to set default value for date planned
+    def onchange_product_id(self):
+        self.date_planned = self.order_id.lift_datetime
+        result = super(PurchaseOrderLine, self).onchange_product_id()
+
+
+    # Feature of having Bill of Lading aks BOL# for each order line
+    bol_ref = fields.Char('BOL#', help='Bill of Lading')
 

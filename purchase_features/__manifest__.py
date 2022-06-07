@@ -29,6 +29,7 @@
         'views/realtime_cost.xml',
         'views/res_partner.xml',
         'views/purchase.xml',
+        'views/stock_picking.xml',
         'views/menuitem.xml',
     ],
 
