@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <record id='wizard_purchase_bol_wizard_form' model='ir.ui.view' >
+            <field name="name">Search Purchase by BOL</field>
+            <field name="model">purchase.bol.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Search Purchase by Bol#">
+                    <group>
+                        <field name="name" 
+                        placeholder="Enter the Bill of Lading # To Match the Bill"/>
+                    </group>
+                    <footer>
+                        <button name="action_view_purchases" type="object" default_focus="1"
+                            string="Match" icon="fa-download" 
+                            class="oe_highlight"/>
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='purchase_bol_wizard_act_window'>
+            <field name="name">Search and Match Supplier Invoice</field>
+            <field name="res_model">purchase.bol.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_purchase_bol_wizard_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem name="Match Supplier Invoice"
+            parent="account.menu_finance_payables"
+            id="purchase_bol_wizard"
+            action="purchase_bol_wizard_act_window"
+            sequence="-1"/>
+    </data>
+</odoo>
