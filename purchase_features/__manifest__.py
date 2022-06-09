@@ -20,8 +20,7 @@
     'version': '14.0.0.0.2',
 
     'depends': [
-        'purchase',
-        'stock'
+        'purchase_stock'
     ],
 
     'data': [

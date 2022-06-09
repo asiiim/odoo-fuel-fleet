@@ -19,7 +19,7 @@ class PurchaseOrder(models.Model):
         copy=False,
         tracking=True, 
         default=fields.Datetime.now)
-    date_planned = fields.Datetime(default=fields.Datetime.now)
+    # date_planned = fields.Datetime(default=fields.Datetime.now)
 
     
     @api.onchange('lift_datetime', 'partner_id', 'terminal_id')
@@ -34,7 +34,7 @@ class PurchaseOrder(models.Model):
     
     @api.onchange('date_planned')
     def check_receipt_date(self):
-        if self.lift_datetime:
+        if self.lift_datetime and self.date_planned:
             if self.date_planned < self.lift_datetime:
                 raise UserError(_('Receipt Date seems older than Lift datetime.'))
 
