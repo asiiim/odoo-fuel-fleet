@@ -49,6 +49,16 @@ class PurchaseOrder(models.Model):
 
         return invoice_vals
 
+    
+    # Set carrier data from purchase to stock picking
+    def _prepare_picking(self):
+        picking_vals = super(PurchaseOrder, self)._prepare_picking()
+
+        if self.carrier_id:
+            picking_vals.update({'carrier_id': self.carrier_id.id})
+        
+        return picking_vals
+
 
 
 class PurchaseOrderLine(models.Model):
