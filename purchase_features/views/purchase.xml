@@ -5,6 +5,11 @@
         <field name="model">purchase.order</field>
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
+            <field name="date_order" position="after">
+                <field name="state" invisible="1"/>
+                <field name="bol_ref" placeholder="BOL#..."
+                attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+            </field>
             <field name="partner_ref" position="after">
                 <field name="terminal_id" options="{'no_quick_create': True}"/>
                 <field name="carrier_id" options="{'no_quick_create': True}"
@@ -22,7 +27,6 @@
                 <field name="realtime_cost" invisible="1"/>
                 <button type="object" name="action_view_realtime_cost" 
                 icon="fa-external-link" class="text-danger"/>
-                <!-- <button name="action_view_realtime_cost" string="Cost" class="oe_highlight" type="object" attrs="{'invisible': [('realtime_cost', '=', False)]}"/> -->
             </xpath>
         </field>
     </record>

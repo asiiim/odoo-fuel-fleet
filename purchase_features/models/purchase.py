@@ -46,7 +46,9 @@ class PurchaseOrder(models.Model):
         invoice_vals = super(PurchaseOrder, self)._prepare_invoice()
 
         invoice_vals.update({
-            'invoice_date': self.lift_datetime
+            'invoice_date': self.lift_datetime,
+            # Add BOL to the Vendor Bill
+            'bol_ref': self.bol_ref
         })
 
         return invoice_vals
@@ -60,6 +62,9 @@ class PurchaseOrder(models.Model):
             picking_vals.update({'carrier_id': self.carrier_id.id})
         
         return picking_vals
+
+    # Bill of lading
+    bol_ref = fields.Char('BOL#', help='Bill of Lading', copy=False)
 
 
 
@@ -145,6 +150,10 @@ class PurchaseOrderLine(models.Model):
             
             cost = self.get_price_unit()
             self.price_unit = cost
+
+        # Assign bol to each line from purchase order bol
+        if self.product_id:
+            self.bol_ref = self.order_id.bol_ref
 
         return
 

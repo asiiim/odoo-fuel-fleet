@@ -13,7 +13,7 @@
     'version': '14.0.0.0.1',
 
     'depends': [
-        'purchase_features', 'account'
+        'purchase_features'
     ],
 
     'data': [

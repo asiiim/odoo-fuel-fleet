@@ -12,15 +12,17 @@
         \n- Get a realtime price while selecting the product in the purchase order line.
         \n- Add the field BOL (Bill of Lading) in Purchase orderline and Receipt Line.
         \n- Set default bill date in Vendor Bill as of Lift Datetime of the Purchase Order.
+        \n- Have a BOL in Purchase and Vendor Bill.
     """,
     'sequence': '1',
     'author': "Aashim Bajracharya",
     'website': "https://www.linkedin.com/in/aashim-bajracharya-860406181/",
     'category': 'Purchase',
-    'version': '14.0.0.0.2',
+    'version': '14.0.0.0.3',
 
     'depends': [
-        'purchase_stock'
+        'purchase_stock',
+        'account'
     ],
 
     'data': [
@@ -31,6 +33,7 @@
         'views/realtime_cost.xml',
         'views/res_partner.xml',
         'views/purchase.xml',
+        'views/vendor_bill.xml',
         'views/stock_picking.xml',
         'views/menuitem.xml',
     ],
