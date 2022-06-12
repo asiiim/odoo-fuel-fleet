@@ -11,10 +11,14 @@ class PurchaseBolWizard(models.TransientModel):
 
 
     def search_purchase_orders(self):
+        '''
+            - get purchase orderline records
+            - search by bill of lading such that BOL value is in both upper and lower
+        '''
+
         purchase_orderline_recs = self.env['purchase.order.line'].search([])
         filtered_recs = purchase_orderline_recs.filtered(lambda orderline: \
-            orderline.bol_ref == self.name)\
-                    .mapped('order_id')
+            orderline.bol_ref in [str(self.name).upper(), str(self.name).lower()]).mapped('order_id')
         return filtered_recs
 
     
