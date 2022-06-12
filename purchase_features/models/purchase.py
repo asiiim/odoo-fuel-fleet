@@ -33,10 +33,12 @@ class PurchaseOrder(models.Model):
 
     
     @api.onchange('date_planned')
-    def check_receipt_date(self):
+    def check_set_receipt_date(self):
         if self.lift_datetime and self.date_planned:
+            print('Info: Date Planned ', self.date_planned)
+            print('Info: Lift Date and Time ', self.lift_datetime)
             if self.date_planned < self.lift_datetime:
-                raise UserError(_('Receipt Date seems older than Lift datetime.'))
+                self.date_planned = self.lift_datetime
 
 
     # Set the bill date (invoice_date) default value with liftdate time
@@ -64,14 +66,6 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
-    # net_gals = fields.Float('Net Gallons', 
-    #     help='Volume of gallons temperature corrected to 60 degrees.')
-    # gross_gals = fields.Float('Gross Gallons',
-    #     help='Volume of gallons at ambient temperature.')
-    # billed_gals = fields.Float('Billed Gallons', 
-    #     help='Volume of gallons billed on invoice by Supplier.')
-    
-    
     # -------------- View Realtime Cost------------------------------ #
     realtime_cost = fields.Many2one('product.realtime.cost',
     compute='get_realtime_cost', store=True)
@@ -156,9 +150,9 @@ class PurchaseOrderLine(models.Model):
 
 
     # This method is overriden to set default value for date planned
-    def onchange_product_id(self):
+    @api.onchange('product_id')
+    def set_date_planned(self):
         self.date_planned = self.order_id.lift_datetime
-        result = super(PurchaseOrderLine, self).onchange_product_id()
 
 
     # Feature of having Bill of Lading aks BOL# for each order line

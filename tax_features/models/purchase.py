@@ -38,10 +38,9 @@ class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
 
-    @api.onchange('product_id')
-    def onchange_product_id(self):
+    def _onchange_quantity(self):
         
-        result = super(PurchaseOrderLine, self).onchange_product_id()
+        result = super(PurchaseOrderLine, self)._onchange_quantity()
         
         if self.product_id:
             # take product categ
@@ -54,6 +53,8 @@ class PurchaseOrderLine(models.Model):
             taxes = self.env['account.tax'].search([
                 ('type_tax_use', '=', 'purchase'), 
                 ('jurisdiction_id', 'in', jurisdictions.ids)])
+
+            print('Info: Selected taxes ', taxes.mapped('name'))
 
             # Add those taxes in the list
             taxes_list = []
@@ -81,4 +82,4 @@ class PurchaseOrderLine(models.Model):
             
             for tax in taxes_list:
                 self.taxes_id += tax
-        return result
+        return
