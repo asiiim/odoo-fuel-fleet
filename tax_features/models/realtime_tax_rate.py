@@ -20,6 +20,18 @@ class RealtimeTaxRate(models.Model):
         tracking=True, 
         default=lambda self: _('New'))
 
+
+    def _prepare_taxlines(self, tax_recs, realtime_tax_rate_id):
+        vals_list = []
+        for rec in tax_recs:
+            vals_list.append({
+                'tax_id': rec.id,
+                'rate': rec.amount,
+                'realtime_tax_rate_id': realtime_tax_rate_id
+            })
+        return vals_list
+
+    
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
@@ -28,6 +40,15 @@ class RealtimeTaxRate(models.Model):
                 .next_by_code('realtime.tax.rate') or _('New')
 
         result = super(RealtimeTaxRate, self).create(vals)
+
+        # Add taxlines details as default value
+        if not result.tax_lines:
+            tax_recs = self.env['account.tax'].search([])
+            realtime_taxrate_line_env = self.env['realtime.tax.rate.line']
+            tax_lines_vals = self._prepare_taxlines(tax_recs, result.id)
+            for val in tax_lines_vals:
+                realtime_taxrate_line_env.create(val)
+
         return result
 
 
