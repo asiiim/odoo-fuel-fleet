@@ -31,7 +31,8 @@
                             <field name="tax_lines">
                                 <tree editable="bottom" string="Tax Rate Lines">
                                     <field name="tax_id"/>
-                                    <field name="rate" widget="monetary"/>
+                                    <field name="tax_type" readonly="1"/>
+                                    <field name="rate"/>
                                     <field name="currency_id" invisible="1"/>
                                     <field name="realtime_tax_rate_id" invisible="1"/>
                                 </tree>

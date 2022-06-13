@@ -25,13 +25,13 @@ class PurchaseOrder(models.Model):
             self.jurisdictions_id = self.partner_id.jurisdictions_id
     
 
-    has_orderline = fields.Boolean(compute='has_orderline', store=True)
+    # has_orderline = fields.Boolean(compute='has_orderline', store=True)
 
-    @api.depends('order_line')
-    def has_orderline(self):
-        for rec in self:
-            if rec.order_line:
-                rec.update({'has_orderline': True})
+    # @api.depends('order_line')
+    # def has_orderline(self):
+    #     for rec in self:
+    #         if rec.order_line:
+    #             rec.update({'has_orderline': True})
 
 
 class PurchaseOrderLine(models.Model):
@@ -69,6 +69,8 @@ class PurchaseOrderLine(models.Model):
                 ('date_time', '<=', self.order_id.lift_datetime)
             ], order='date_time desc')
 
+            print('Info: Realtime Tax Rate Records: ', realtime_tax_rate_recs.mapped('name'))
+
             if realtime_tax_rate_recs:
                 for i, tax in enumerate(taxes_list):
                     rate_rec = realtime_tax_rate_recs.\
@@ -78,6 +80,7 @@ class PurchaseOrderLine(models.Model):
 
                     if rate_rec:
                         taxrate = rate_rec.mapped('rate')[0]
+                        print('Info: Realtime Tax Rate of %s: %s' % (tax.name, taxrate))
                         taxes_list[i].write({'amount': taxrate})
             
             for tax in taxes_list:

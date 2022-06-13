@@ -17,8 +17,9 @@ class PurchaseBolWizard(models.TransientModel):
         '''
 
         purchase_orderline_recs = self.env['purchase.order.line'].search([])
-        filtered_recs = purchase_orderline_recs.filtered(lambda orderline: \
-            orderline.bol_ref in [str(self.name).upper(), str(self.name).lower()]).mapped('order_id')
+        filtered_recs = purchase_orderline_recs.filtered(
+            lambda orderline: str(orderline.bol_ref).casefold() == str(self.name).casefold()).mapped('order_id')
+        print('Info::: Searched Purchase Orders: ', filtered_recs.mapped('name'))
         return filtered_recs
 
     
@@ -27,8 +28,6 @@ class PurchaseBolWizard(models.TransientModel):
         
         action = self.env['ir.actions.act_window']\
             ._for_xml_id('purchase.purchase_form_action')
-        account_dashboard = self.env['ir.actions.act_window']\
-            ._for_xml_id('account.open_account_journal_dashboard_kanban')
         
         if len(purchases) > 1:
             action['domain'] = [('id', 'in', purchases.ids)]
@@ -44,8 +43,7 @@ class PurchaseBolWizard(models.TransientModel):
                 action['views'] = form_view
             action['res_id'] = purchases.id
         else:
-            # action = {'type': 'ir.actions.act_window_close'}
-            return account_dashboard
+            return {'type': 'ir.actions.act_window_close'}
         
         return action
 

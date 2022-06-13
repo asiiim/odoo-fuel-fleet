@@ -11,6 +11,10 @@
                 
                 <!-- attrs="{'readonly': [('has_orderline', '=', True)]}" -->
             </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" 
+            position="after">
+                <field name="price_total" string="Total (with tax)" widget="monetary"/>
+            </xpath>
         </field>
     </record>
 </odoo>

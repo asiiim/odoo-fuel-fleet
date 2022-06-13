@@ -78,12 +78,11 @@ class RealtimeTaxRateLine(models.Model):
         required=True
     )
 
+    tax_type = fields.Selection(related='tax_id.type_tax_use')
+
     currency_id = fields.Many2one(
         'res.currency', 'Currency', 
         required=True,        
         default=lambda self: self.env.company.currency_id.id)
 
-    rate = fields.Monetary(
-        string='Rate',
-        tracking=True,
-        default=0.0)
+    rate = fields.Float(required=True, digits=(16, 4), default=0.0)
