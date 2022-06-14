@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="inherit_report_purchasequotation_document" inherit_id="purchase.report_purchasequotation_document">
+        <xpath expr="//div[@t-field='o.partner_id']" position="before">
+            <strong>Supplier: </strong>
+        </xpath>
+        <xpath expr="//p[@t-if='o.partner_id.vat']" position="after">
+            <strong>Terminal: </strong>
+            <p t-field='o.terminal_id'/>
+        </xpath>
+    </template>
+</odoo>

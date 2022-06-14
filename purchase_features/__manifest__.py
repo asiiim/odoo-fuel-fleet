@@ -35,6 +35,7 @@
         'views/purchase.xml',
         'views/vendor_bill.xml',
         'views/stock_picking.xml',
+        'reports/purchase.xml',
         'views/menuitem.xml',
     ],
 
