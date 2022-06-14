@@ -7,9 +7,10 @@
         <field name="arch" type="xml">
             <field name="picking_type_id" position="before">
                 <field name="carrier_id" options="{'no_quick_create': True}"
-                context="{'default_is_carrier': True}"
-                widget="res_partner_many2one"
-                placeholder="Carriers, Trucking Companies..."/>
+                    context="{'default_is_carrier': True}"
+                    widget="res_partner_many2one"
+                    placeholder="Carriers, Trucking Companies..."/>
+                <field name="bol_ref" placeholder="BOL#..."/>
             </field>
             <xpath 
             expr="//field[@name='move_ids_without_package']/tree//field[@name='product_id']" 

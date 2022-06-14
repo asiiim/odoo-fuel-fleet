@@ -59,7 +59,10 @@ class PurchaseOrder(models.Model):
         picking_vals = super(PurchaseOrder, self)._prepare_picking()
 
         if self.carrier_id:
-            picking_vals.update({'carrier_id': self.carrier_id.id})
+            picking_vals.update({
+                'carrier_id': self.carrier_id.id,
+                'bol_ref': self.bol_ref
+            })
         
         return picking_vals
 
@@ -165,5 +168,15 @@ class PurchaseOrderLine(models.Model):
 
 
     # Feature of having Bill of Lading aks BOL# for each order line
-    bol_ref = fields.Char('BOL#', help='Bill of Lading')
+    bol_ref = fields.Char('BOL#', help='Bill of Lading', compute='get_bol', inverse='set_bol')
+
+    @api.depends('order_id')
+    def get_bol(self):
+        for rec in self:
+            if rec.order_id.bol_ref:
+                rec.update({'bol_ref': rec.order_id.bol_ref})
+    
+    def set_bol(self):
+        if self.bol_ref:
+            self.order_id.update({'bol_ref': self.bol_ref})
 

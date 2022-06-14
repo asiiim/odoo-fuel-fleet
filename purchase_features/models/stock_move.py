@@ -8,5 +8,16 @@ class StockMove(models.Model):
     _inherit = 'stock.move'
 
 
-    # Feature of having Bill of Lading aks BOL# for each order line
-    bol_ref = fields.Char('BOL#', help='Bill of Lading')
+    bol_ref = fields.Char('BOL#', help='Bill of Lading', compute='get_bol', inverse='set_bol')
+
+
+    @api.depends('picking_id')
+    def get_bol(self):
+        for rec in self:
+            if rec.picking_id.bol_ref:
+                rec.update({'bol_ref': rec.picking_id.bol_ref})
+
+    
+    def set_bol(self):
+        if self.bol_ref:
+            self.picking_id.update({'bol_ref': self.bol_ref})

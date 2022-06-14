@@ -14,7 +14,10 @@ class StockPicking(models.Model):
 
 
     def button_validate(self):
-        result = super(StockPicking, self).button_validate()
+        result = super(
+            StockPicking, 
+            self.with_context(skip_backorder=True, picking_ids_not_to_backorder=self.id))\
+                .button_validate()
 
         for rec in self:
             purchase_rec = self.env['purchase.order'].search([('name', '=', rec.origin)])
@@ -31,3 +34,7 @@ class StockPicking(models.Model):
                         raise UserError('Please check BOL of %s' % move.product_id.name)
 
         return result
+
+    
+    # Bill of lading
+    bol_ref = fields.Char('BOL#', help='Bill of Lading', copy=False)
