@@ -34,7 +34,7 @@
                                     <field name="terminal_id"/>
                                     <field name="product_id"/>
                                     <field name="uom"/>
-                                    <field name="cost" widget="monetary"/>
+                                    <field name="cost"/>
                                     <field name="currency_id" invisible="1"/>
                                     <field name="realcost_id" invisible="1"/>
                                 </tree>

@@ -81,5 +81,4 @@ class ProductRealtimeCostLine(models.Model):
         required=True,        
         default=lambda self: self.env.company.currency_id.id)
 
-    cost = fields.Monetary(
-        string='Cost')
+    cost = fields.Float(string='Cost', required=True, digits=(16, 5), default=0.0)
