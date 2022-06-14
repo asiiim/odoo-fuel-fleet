@@ -19,19 +19,19 @@ class StockPicking(models.Model):
             self.with_context(skip_backorder=True, picking_ids_not_to_backorder=self.id))\
                 .button_validate()
 
-        for rec in self:
-            purchase_rec = self.env['purchase.order'].search([('name', '=', rec.origin)])
-            print('INFO Purchase Order Origin: ', purchase_rec.mapped('name'))
-            purchase_orderlines = purchase_rec.mapped('order_line')
+        # for rec in self:
+        #     purchase_rec = self.env['purchase.order'].search([('name', '=', rec.origin)])
+        #     print('INFO Purchase Order Origin: ', purchase_rec.mapped('name'))
+        #     purchase_orderlines = purchase_rec.mapped('order_line')
 
-            if purchase_rec:
-                for move in rec.move_ids_without_package:
-                    filtered_pol = purchase_orderlines.filtered(lambda pol: pol.product_id == move.product_id)
-                    print('Filtered POL: ', filtered_pol.mapped('product_id').mapped('name'))
-                    if move.bol_ref in filtered_pol.mapped('bol_ref'):
-                        continue
-                    else:
-                        raise UserError('Please check BOL of %s' % move.product_id.name)
+        #     if purchase_rec:
+        #         for move in rec.move_ids_without_package:
+        #             filtered_pol = purchase_orderlines.filtered(lambda pol: pol.product_id == move.product_id)
+        #             print('Filtered POL: ', filtered_pol.mapped('product_id').mapped('name'))
+        #             if move.bol_ref in filtered_pol.mapped('bol_ref'):
+        #                 continue
+        #             else:
+        #                 raise UserError('Please check BOL of %s' % move.product_id.name)
 
         return result
 
