@@ -14,11 +14,9 @@ class PurchaseOrder(models.Model):
             Supplier at the specific Terminal''')
     lift_datetime = fields.Datetime(
         string='Lift Date & Time', 
-        required=True, 
         index=True, 
         copy=False,
-        tracking=True, 
-        default=fields.Datetime.now)
+        tracking=True)
     # date_planned = fields.Datetime(default=fields.Datetime.now)
 
     
@@ -52,6 +50,16 @@ class PurchaseOrder(models.Model):
         })
 
         return invoice_vals
+
+
+    # Check the liftdatetime if set while confirming the RFQ into Purchase Order
+    def button_confirm(self):
+        result = super(PurchaseOrder, self).button_confirm()
+
+        for rec in self:
+            if not rec.lift_datetime:
+                raise UserError('Please set Lift Date and Time of the RFQ: %s.' % rec.name)
+        return result
 
     
     # Set carrier data from purchase to stock picking
