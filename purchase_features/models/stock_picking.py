@@ -8,9 +8,15 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
 
+    terminal_id = fields.Many2one('fuel.terminal')
     carrier_id = fields.Many2one('res.partner', domain="[('is_carrier', '=', True)]",
         help='''Carriers (trucking companies) approved to lift product from the specific 
             Supplier at the specific Terminal''')
+    lift_datetime = fields.Datetime(
+        string='Lift Date & Time', 
+        index=True, 
+        copy=False,
+        tracking=True)
 
 
     def button_validate(self):

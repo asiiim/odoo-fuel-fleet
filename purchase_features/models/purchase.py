@@ -69,7 +69,9 @@ class PurchaseOrder(models.Model):
         if self.carrier_id:
             picking_vals.update({
                 'carrier_id': self.carrier_id.id,
-                'bol_ref': self.bol_ref
+                'bol_ref': self.bol_ref,
+                'terminal_id': self.terminal_id.id,
+                'lift_datetime': self.lift_datetime
             })
         
         return picking_vals
