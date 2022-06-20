@@ -16,7 +16,14 @@ class PurchaseOrder(models.Model):
     def update_taxes(self):
         if self.jurisdictions_id:
             for line in self.order_line:
+                # Save the qty value before it gets 
+                # reset due to trigger of 'onchange_product_id()
+                qty = line.product_qty
                 line.onchange_product_id()
+                line.product_qty = qty
+        else:
+            for line in self.order_line:
+                line.taxes_id = None
 
 
     @api.onchange('partner_id')
