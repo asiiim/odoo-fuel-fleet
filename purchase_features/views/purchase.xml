@@ -30,4 +30,15 @@
             </xpath>
         </field>
     </record>
+    <record id="inherit_purchase_order_view_form_inherit" model="ir.ui.view">
+        <field name="name">inherit.purchase.order.view.form.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase_stock.purchase_order_view_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='incoming_picking_count']" 
+            position="attributes">
+                <attribute name="string">BOL</attribute>
+            </xpath>
+        </field>
+    </record>
 </odoo>
