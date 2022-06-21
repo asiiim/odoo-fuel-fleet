@@ -26,7 +26,6 @@
     ],
 
     'data': [
-        # 'security/security.xml',
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
         'views/terminal.xml',
@@ -34,7 +33,6 @@
         'views/res_partner.xml',
         'views/purchase.xml',
         'views/vendor_bill.xml',
-        'views/stock_picking.xml',
         'reports/purchase.xml',
         'views/menuitem.xml',
     ],
