@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_requisition_form_inherit" model="ir.ui.view">
+        <field name="name">Inherit Purchase Requisition Form View</field>
+        <field name="model">purchase.requisition</field>
+        <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+        <field name="arch" type="xml">
+            <field name="vendor_id" position="after">
+                <field name="terminal_id"/>
+            </field>
+
+            <button name="%(purchase_requisition.action_purchase_requisition_to_so)d" position="replace">
+                <button name="action_make_new_quotation" type="object"
+                    string="New Quotation"
+                    attrs="{'invisible': [('state', '!=', 'open')]}"/>
+            </button>
+            <button name="%(purchase_requisition.action_purchase_requisition_to_so)d" position="replace">
+                <button name="action_make_new_quotation" type="object" class="btn-primary"
+                    string="New Quotation"
+                    attrs="{'invisible': [('state', 'not in', ('in_progress', 'ongoing'))]}"/>
+            </button>
+        </field>
+    </record>
+</odoo>

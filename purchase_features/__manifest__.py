@@ -22,7 +22,8 @@
 
     'depends': [
         'purchase_stock',
-        'account'
+        'account',
+        'purchase_requisition'
     ],
 
     'data': [
@@ -32,6 +33,7 @@
         'views/realtime_cost.xml',
         'views/res_partner.xml',
         'views/purchase.xml',
+        'views/purchase_requisition.xml',
         'views/vendor_bill.xml',
         'reports/purchase.xml',
         'views/menuitem.xml',
