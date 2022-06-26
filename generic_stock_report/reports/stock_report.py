@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from contextlib import closing
+from unittest import result
 from odoo import models, fields, _
 import datetime
 from datetime import datetime, timedelta, date
@@ -15,7 +17,7 @@ class StockReportXls(models.AbstractModel):
         sheet = workbook.add_worksheet('Stock Report by Product Category')
         
         self.print_header(data, workbook, sheet)
-        # self.print_stock_report(data, workbook, sheet)
+        self.print_stock_report(data, workbook, sheet)
 
         # Manual adjustment of the columns width
         
@@ -42,6 +44,72 @@ class StockReportXls(models.AbstractModel):
             return True
         else:
             return False
+
+
+    # This method is used for looping through each between two dates
+    def _date_range(self, start_date, end_date):
+        
+        start_date = datetime.strptime(
+            start_date, "%Y-%m-%d").date()
+        end_date = datetime.strptime(
+            end_date, "%Y-%m-%d").date()
+        
+        for n in range(int((end_date - start_date).days) + 1):
+            yield start_date + timedelta(n)
+
+
+    # Return opening and closing value on given date
+    def _get_opening_closing(self, product, location, dt):
+
+        # Converting date to datetime
+        opening_date = datetime.fromordinal((dt + timedelta(days=-1))\
+            .toordinal()).replace(hour=23, minute=59, second=59, microsecond=999999)
+        closing_date = datetime.fromordinal(dt.toordinal())\
+            .replace(hour=23, minute=59, second=59, microsecond=999999)
+
+        op_clo_data = {}
+        
+        sml = self.env['stock.move.line'].search([
+            '|', ('location_id', '=', location.id), ('location_dest_id', '=', location.id),
+            ('product_id', '=', product.id), ('state', '=', 'done')
+        ])
+
+        opening_sml_recs = sml.filtered(lambda x: x.date <= opening_date)
+        opening_qty = sum(opening_sml_recs.filtered(lambda x: x.location_dest_id == location).mapped('qty_done')) \
+            - sum(opening_sml_recs.filtered(lambda x: x.location_id == location).mapped('qty_done'))
+        
+        in_qty = sum(sml.filtered(lambda x: x.date > opening_date and x.date <= closing_date).filtered(
+            lambda x: x.location_id.usage == 'supplier'
+        ).mapped('qty_done'))
+        out_qty = sum(sml.filtered(lambda x: x.date > opening_date and x.date <= closing_date).filtered(
+            lambda x: x.location_dest_id.usage == 'customer'
+        ).mapped('qty_done'))
+        
+        trf_sml_recs = sml.filtered(lambda x: x.date > opening_date and x.date <= closing_date).filtered(
+            lambda x: x.location_id.usage == 'internal' and x.location_dest_id.usage == 'internal')
+        trf_qty = sum(trf_sml_recs.filtered(lambda x: x.location_id != location).mapped('qty_done')) \
+            - sum(trf_sml_recs.filtered(lambda x: x.location_dest_id != location).mapped('qty_done'))
+
+
+        adj_sml_recs = sml.filtered(lambda x: x.date > opening_date and x.date <= closing_date).filtered(
+            lambda x: x.location_id.usage == 'inventory' or x.location_dest_id.usage == 'inventory')
+        adj_qty = sum(adj_sml_recs.filtered(lambda x: x.location_dest_id == location).mapped('qty_done')) \
+            - sum(adj_sml_recs.filtered(lambda x: x.location_id == location).mapped('qty_done'))
+
+        closing_qty = opening_qty + in_qty - out_qty + trf_qty
+        physical_qty = closing_qty + adj_qty
+        
+        op_clo_data.update({
+            'opening_qty': opening_qty,
+            'in_qty': in_qty,
+            'trf_qty': trf_qty,
+            'out_qty': out_qty*-1,
+            'closing_qty': closing_qty,
+            'physical_qty': physical_qty,
+            'adj_qty': adj_qty
+        })
+
+        return op_clo_data
 
 
     def print_header(self, data, workbook, sheet):
@@ -109,7 +177,7 @@ class StockReportXls(models.AbstractModel):
         sheet.write('I9', 'Adjustment', format_header)
         
 
-    # def get_records(self,data, location=None,product_id=None):
+    # def get_records(self, data):
     #     '''
     #     @param start_date: start date
     #     @param end_date: end date
@@ -153,7 +221,7 @@ class StockReportXls(models.AbstractModel):
     #     for record in (records.filtered(lambda r: r.location_id.id == location)):
     #         total_out += record.product_uom_id._compute_quantity(record.qty_done, record.product_id.uom_id)
     #         total_out_value += record.qty_done
-    #     summary = {
+    #     stock_data = {
     #         'barcode': product_id.barcode,
     #         'product' : product_id,
     #         'product_name': product_id.name,
@@ -164,96 +232,107 @@ class StockReportXls(models.AbstractModel):
     #         'total_in' :total_in,
     #         'total_out' : total_out,
     #     }
-    #     return summary
+    #     return stock_data
     
     
-    # def print_stock_report(self, data, workbook, sheet):
+    def print_stock_report(self, data, workbook, sheet):
 
-    #     format_total_string = workbook.add_format({
-    #         'font_name': 'Arial','font_size': 12, 
-    #         'align': 'center', 'bold': True,
-    #         'bg_color': 'blue', 'font_color': 'white', 'border':1, 'border_color': '#000000'})
-    #     format_total_numeric = workbook.add_format({
-    #         'font_name': 'Arial','font_size': 12, 'align': 'right', 
-    #         'bold': True, 'num_format': '#,##0.00', 
-    #         'bg_color': 'blue', 'font_color': 'white', 'border':1, 'border_color': '#000000'})
-    #     format_string_left = workbook.add_format({
-    #         'font_name': 'Arial','font_size': 12, 
-    #         'align': 'left','bold': False, 'border':1, 'border_color': '#000000'})
-    #     format_string_right = workbook.add_format({
-    #         'font_name': 'Arial','font_size': 12, 
-    #         'align': 'right','bold': False, 'border':1, 'border_color': '#000000'})
-    #     format_string_center = workbook.add_format({
-    #         'font_name': 'Arial','font_size': 12, 
-    #         'align': 'center','bold': False, 'border':1, 'border_color': '#000000'})
-    #     format_numeric_right = workbook.add_format({
-    #         'font_name': 'Arial','font_size': 12, 
-    #         'align': 'right', 'num_format': '#,##0.00',
-    #         'bold': False, 'border':1, 'border_color': '#000000'})
+        format_total_string = workbook.add_format({
+            'font_name': 'Arial','font_size': 12, 
+            'align': 'center', 'bold': True,
+            'bg_color': 'blue', 'font_color': 'white', 'border':1, 'border_color': '#000000'})
+        format_total_numeric = workbook.add_format({
+            'font_name': 'Arial','font_size': 12, 'align': 'right', 
+            'bold': True, 'num_format': '#,##0.00', 
+            'bg_color': 'blue', 'font_color': 'white', 'border':1, 'border_color': '#000000'})
+        format_string_left = workbook.add_format({
+            'font_name': 'Arial','font_size': 12, 
+            'align': 'left','bold': False, 'border':1, 'border_color': '#000000'})
+        format_string_right = workbook.add_format({
+            'font_name': 'Arial','font_size': 12, 
+            'align': 'right','bold': False, 'border':1, 'border_color': '#000000'})
+        format_string_center = workbook.add_format({
+            'font_name': 'Arial','font_size': 12, 
+            'align': 'center','bold': False, 'border':1, 'border_color': '#000000'})
+        format_numeric_right = workbook.add_format({
+            'font_name': 'Arial','font_size': 12, 
+            'align': 'right', 'num_format': '#,##0.00',
+            'bold': False, 'border':1, 'border_color': '#000000'})
         
-    #     location = data['form']['location_id']
-    #     product = data['form']['product_id']
+        product = self.env['product.product'].search([
+            ('id','=', data['form']['product_id']),('type', '=', 'product')])
+        location = self.env['stock.location'].search([
+            ('id', '=', data['form']['location_id'])])
 
-    #     if not product:
-    #         categ = data['product_category']
-    #         products = self.env['product.product'].search(
-    #             ['|', ('categ_id', '=?', categ), ('categ_id', 'child_of', categ)]).ids
-
-    #     row = 8
-
-    #     total_invoice_cost = total_import_cost = total_landed_cost = total_mrp\
-    #         = total_opening = total_in = total_out = total_closing\
-    #             = total_stock_valuation = 0.0
-
-    #     for product in products:
-
-    #         landed_cost = self.get_landed_cost(product, data)
-    #         invoice_cost = round(self.get_invoice_cost(product, data), 2)
-
-    #         summary = self.get_records(data, location=location, product_id=product)
+        row = 9
+        dt_range = self._date_range(data['form']['start_date'], data['form']['end_date'])
+        cumulative_adj = 0.0
+        # Set date value in each row of the 1st column
+        for dt in dt_range:
             
-    #         sheet.write(row, 0, summary['barcode'], format_string_center)
-    #         sheet.write(row, 1, summary['product_name'], format_string_left)
-    #         sheet.write(row, 2, summary['product_uom'], format_string_center)
-    #         sheet.write(row, 3, invoice_cost, format_numeric_right)
-    #         sheet.write(row, 4, landed_cost, format_numeric_right)
-    #         sheet.write(row, 5, invoice_cost+landed_cost, format_numeric_right)
-    #         sheet.write(row, 6, summary['mrp'], format_numeric_right)
-    #         sheet.write(row, 7, summary['opening'], format_numeric_right)
-    #         sheet.write(row, 8, summary['total_in'], format_numeric_right)
-    #         sheet.write(row, 9, summary['total_out'], format_numeric_right)
-    #         sheet.write(row, 10, summary['closing'], format_numeric_right)
-    #         sheet.write(row, 11, 
-    #             ((invoice_cost+landed_cost)*summary['closing']), 
-    #             format_numeric_right)
+            dt_str = dt.strftime("%d-%m-%Y")
+            stock_data = self._get_opening_closing(product, location, dt)
+            sheet.write(row, 0, dt_str, format_string_center)
+            sheet.write(row, 1, stock_data['opening_qty'], format_numeric_right)
+            sheet.write(row, 2, stock_data['in_qty'], format_numeric_right)
+            sheet.write(row, 3, stock_data['trf_qty'], format_numeric_right)
+            sheet.write(row, 4, stock_data['out_qty'], format_numeric_right)
+            sheet.write(row, 5, stock_data['closing_qty'], format_numeric_right)
+            sheet.write(row, 6, stock_data['physical_qty'], format_numeric_right)
+            sheet.write(row, 7, stock_data['adj_qty'], format_numeric_right)
 
-    #         total_invoice_cost += invoice_cost
-    #         total_import_cost += landed_cost
-    #         total_landed_cost += (invoice_cost + landed_cost)
-    #         total_mrp += summary['mrp']
-    #         total_opening += summary['opening']
-    #         total_in += summary['total_in']
-    #         total_out += summary['total_out']
-    #         total_closing += summary['closing']
-    #         total_stock_valuation += (((invoice_cost+landed_cost)*summary['closing']))
+            cumulative_adj += stock_data['adj_qty']
+
+            sheet.write(row, 8, cumulative_adj, format_numeric_right)
+            row += 1
+
+
+        # if product:
+        #     stock_data = self.get_records(data)
             
-    #         row += 1
-    #     row += 1
+        #     sheet.write(row, 0, stock_data['barcode'], format_string_center)
+        #     sheet.write(row, 1, stock_data['product_name'], format_string_left)
+        #     sheet.write(row, 2, stock_data['product_uom'], format_string_center)
+        #     sheet.write(row, 3, invoice_cost, format_numeric_right)
+        #     sheet.write(row, 4, landed_cost, format_numeric_right)
+        #     sheet.write(row, 5, invoice_cost+landed_cost, format_numeric_right)
+        #     sheet.write(row, 6, stock_data['mrp'], format_numeric_right)
+        #     sheet.write(row, 7, stock_data['opening'], format_numeric_right)
+        #     sheet.write(row, 8, stock_data['total_in'], format_numeric_right)
+        #     sheet.write(row, 9, stock_data['total_out'], format_numeric_right)
+        #     sheet.write(row, 10, stock_data['closing'], format_numeric_right)
+        #     sheet.write(row, 11, 
+        #         ((invoice_cost+landed_cost)*stock_data['closing']), 
+        #         format_numeric_right)
 
-    #     # Total amount
-    #     sheet.merge_range(
-    #         'A%s:C%s' % (str(row), str(row)), 
-    #         'Total', 
-    #         format_total_string
-    #     )
-    #     row -= 1
-    #     sheet.write(row, 3, total_invoice_cost, format_total_numeric)
-    #     sheet.write(row, 4, total_import_cost, format_total_numeric)
-    #     sheet.write(row, 5, total_landed_cost, format_total_numeric)
-    #     sheet.write(row, 6, total_mrp, format_total_numeric)
-    #     sheet.write(row, 7, total_opening, format_total_numeric)
-    #     sheet.write(row, 8, total_in, format_total_numeric)
-    #     sheet.write(row, 9, total_out, format_total_numeric)
-    #     sheet.write(row, 10, total_closing, format_total_numeric)
-    #     sheet.write(row, 11, total_stock_valuation, format_total_numeric)
+        #     total_invoice_cost += invoice_cost
+        #     total_import_cost += landed_cost
+        #     total_landed_cost += (invoice_cost + landed_cost)
+        #     total_mrp += stock_data['mrp']
+        #     total_opening += stock_data['opening']
+        #     total_in += stock_data['total_in']
+        #     total_out += stock_data['total_out']
+        #     total_closing += stock_data['closing']
+        #     total_stock_valuation += (((invoice_cost+landed_cost)*stock_data['closing']))
+            
+        #     row += 1
+        # row += 1
+
+        # # Total amount
+        # sheet.merge_range(
+        #     'A%s:C%s' % (str(row), str(row)), 
+        #     'Total', 
+        #     format_total_string
+        # )
+        # row -= 1
+        # sheet.write(row, 3, total_invoice_cost, format_total_numeric)
+        # sheet.write(row, 4, total_import_cost, format_total_numeric)
+        # sheet.write(row, 5, total_landed_cost, format_total_numeric)
+        # sheet.write(row, 6, total_mrp, format_total_numeric)
+        # sheet.write(row, 7, total_opening, format_total_numeric)
+        # sheet.write(row, 8, total_in, format_total_numeric)
+        # sheet.write(row, 9, total_out, format_total_numeric)
+        # sheet.write(row, 10, total_closing, format_total_numeric)
+        # sheet.write(row, 11, total_stock_valuation, format_total_numeric)
+
 
