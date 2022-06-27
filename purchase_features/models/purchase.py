@@ -12,6 +12,7 @@ class PurchaseOrder(models.Model):
     carrier_id = fields.Many2one('res.partner', domain="[('is_carrier', '=', True)]",
         help='''Carriers (trucking companies) approved to lift product from the specific 
             Supplier at the specific Terminal''')
+    driver_id = fields.Many2one('res.partner', domain="[('is_driver', '=', True)]")
     lift_datetime = fields.Datetime(
         string='Lift Date & Time', 
         index=True, 
@@ -71,6 +72,7 @@ class PurchaseOrder(models.Model):
                 'carrier_id': self.carrier_id.id,
                 'bol_ref': self.bol_ref,
                 'terminal_id': self.terminal_id.id,
+                'driver_id': self.driver_id.id,
                 'lift_datetime': self.lift_datetime
             })
         

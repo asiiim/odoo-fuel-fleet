@@ -16,6 +16,10 @@
                 context="{'default_is_carrier': True}"
                 widget="res_partner_many2one"
                 placeholder="Carriers, Trucking Companies..."/>
+                <field name="driver_id" options="{'no_quick_create': True}"
+                context="{'default_is_driver': True}"
+                widget="res_partner_many2one"
+                placeholder="Driver Information..."/>
                 <field name="lift_datetime"/>
             </field>
             <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" 

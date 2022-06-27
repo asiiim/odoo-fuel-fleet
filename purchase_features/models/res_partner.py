@@ -8,6 +8,7 @@ class ResPartner(models.Model):
 
 
     is_carrier = fields.Boolean(string='Is Carrier?', default=False)
+    is_driver = fields.Boolean(string='Is Driver?', default=False)
 
     @api.onchange('is_carrier')
     def set_company(self):

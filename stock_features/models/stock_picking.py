@@ -12,6 +12,7 @@ class StockPicking(models.Model):
     carrier_id = fields.Many2one('res.partner', domain="[('is_carrier', '=', True)]",
         help='''Carriers (trucking companies) approved to lift product from the specific 
             Supplier at the specific Terminal''')
+    driver_id = fields.Many2one('res.partner', domain="[('is_driver', '=', True)]")
     lift_datetime = fields.Datetime(
         string='Lift Date & Time', 
         index=True, 
