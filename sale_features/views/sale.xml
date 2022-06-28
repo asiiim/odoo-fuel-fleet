@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_view_order_form_inherit" model="ir.ui.view">
+        <field name="name">Inherit Sale Order Form View</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="date_order" position="after">
+                <field name="state" invisible="1"/>
+                <field name="bol_ref" placeholder="BOL#..."
+                    attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                <field name="carrier_id" options="{'no_quick_create': True}"
+                    context="{'default_is_carrier': True}"
+                    widget="res_partner_many2one"
+                    placeholder="Carriers, Trucking Companies..."/>
+                <field name="driver_id" options="{'no_quick_create': True}"
+                    context="{'default_is_driver': True}"
+                    widget="res_partner_many2one"
+                    placeholder="Driver Information..."/>
+            </field>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" 
+            position="after">
+                <field name="bol_ref" placeholder="BOL#..."/>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Rename Delivery to BOL -->
+    <record id="inherit_view_order_form_inherit_sale_stock" model="ir.ui.view">
+        <field name="name">Inherit Sale Stock Form View</field>
+        <field name="model">stock.order</field>
+        <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='delivery_count']" 
+            position="attributes">
+                <attribute name="string">BOL</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
