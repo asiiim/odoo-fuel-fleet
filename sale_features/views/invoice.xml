@@ -15,6 +15,9 @@
                     widget="res_partner_many2one"
                     placeholder="Driver Information..."/>
             </field>
+            <field name="tax_totals_json" position="after">
+                <field name="total_qty"/>
+            </field>
         </field>
     </record>
 </odoo>

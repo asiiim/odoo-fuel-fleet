@@ -2,7 +2,10 @@
 
 from datetime import datetime, timedelta
 from odoo import api, fields, models, _
+from collections import defaultdict
 from odoo.exceptions import UserError
+
+import json
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -43,6 +46,23 @@ class SaleOrder(models.Model):
                 if not picking.bol_ref:
                     picking.write({'bol_ref': self.bol_ref})
         return result
+
+
+    # Get total qty in the bottom section of the sales order.
+    total_qty = fields.Char(
+        string="Total Qty",
+        compute='_get_total_qty',
+        store=True)
+
+    @api.depends('order_line.product_uom_qty')
+    def _get_total_qty(self):
+        for order in self:
+            qty = 0.0
+            for line in order.order_line:
+                qty += line.product_uom_qty
+            order.update({'total_qty': qty})
+
+
 
 
 

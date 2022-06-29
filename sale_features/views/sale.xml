@@ -22,6 +22,9 @@
             position="after">
                 <field name="bol_ref" placeholder="BOL#..."/>
             </xpath>
+            <field name="tax_totals_json" position="after">
+                <field name="total_qty"/>
+            </field>
         </field>
     </record>
     
