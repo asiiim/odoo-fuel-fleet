@@ -16,6 +16,7 @@
     'version': '15.0.0.0.1',
 
     'depends': [
+        'sale_management',
         'stock_features',
         'account',
     ],
@@ -23,7 +24,7 @@
     'data': [
         # 'views/res_partner.xml',
         'views/sale.xml',
-        # 'views/invoice.xml',
+        'views/invoice.xml',
     ],
 
     'application': True

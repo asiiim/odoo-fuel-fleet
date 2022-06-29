@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
- 
+    <record id="view_move_form_inherit" model="ir.ui.view">
+        <field name="name">Inherit Account Invoice Form View</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <field name="invoice_date" position="after">
+                <field name="carrier_id" options="{'no_quick_create': True}"
+                    context="{'default_is_carrier': True}"
+                    widget="res_partner_many2one"
+                    placeholder="Carriers, Trucking Companies..."/>
+                <field name="driver_id" options="{'no_quick_create': True}"
+                    context="{'default_is_driver': True}"
+                    widget="res_partner_many2one"
+                    placeholder="Driver Information..."/>
+            </field>
+        </field>
+    </record>
 </odoo>
