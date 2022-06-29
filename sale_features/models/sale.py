@@ -18,7 +18,19 @@ class SaleOrder(models.Model):
     bol_ref = fields.Char('BOL#', help='Bill of Lading', copy=False)
 
 
-     # Set data from sale to stock picking
+    # Update driver and carrier value to created invoice
+    def _prepare_invoice(self):
+        invoice_vals = super(SaleOrder, self)._prepare_invoice()
+
+        invoice_vals.update({
+            'driver_id': self.driver_id.id,
+            'carrier_id': self.carrier_id.id,
+        })
+
+        return invoice_vals
+
+
+    # Set data from sale to stock picking
     def _get_action_view_picking(self, pickings):
         result = super(SaleOrder, self)._get_action_view_picking(pickings)
 
