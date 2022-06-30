@@ -27,3 +27,11 @@ class SaleInvoice(models.Model):
             for line in invoice.invoice_line_ids:
                 qty += line.quantity
             invoice.update({'total_qty': qty})
+
+
+class SaleInvoiceLine(models.Model):
+    _inherit = 'account.move.line'
+
+
+    # Add unique asset id for each line
+    unique_asset_id = fields.Many2one('fuel.asset', string='Asset')

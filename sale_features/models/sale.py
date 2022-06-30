@@ -84,3 +84,7 @@ class SaleOrderLine(models.Model):
         if self.bol_ref:
             self.order_id.update({'bol_ref': self.bol_ref})
 
+    
+    # Add unique asset id for each line
+    unique_asset_id = fields.Many2one('fuel.asset', string='Asset')
+

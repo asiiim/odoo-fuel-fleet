@@ -2,4 +2,4 @@
 
 from . import sale
 from . import invoice
-# from . import res_partner
+from . import fuel_asset

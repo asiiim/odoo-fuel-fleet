@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_fuel_assets"
+        name="Fuel Assets"
+        parent="sale.sale_menu_root"
+        action="sale_features.action_fuel_assets"
+        sequence="10"/>
+</odoo>
