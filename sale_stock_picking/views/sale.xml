@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_view_order_form_inherit" model="ir.ui.view">
+        <field name="name">Inherit Sale Order Form View</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_shipping_id" position="after">
+                <field name="picking_type_id" 
+                domain="[('code','=','outgoing'), '|', ('warehouse_id', '=', False), ('warehouse_id.company_id', '=', company_id)]" 
+                options="{'no_create': True}" 
+                groups="stock.group_stock_multi_locations"/>
+            </field>
+        </field>
+    </record>
+</odoo>
