@@ -34,15 +34,3 @@ class SaleOrder(models.Model):
         default=_default_picking_type, 
         domain="['|', ('warehouse_id', '=', False), ('warehouse_id.company_id', '=', company_id)]",
         help="This will determine operation type of outgoing shipment (delivery)")
-
-
-    # Set data from sale to stock picking
-    def _get_action_view_picking(self, pickings):
-        result = super(SaleOrder, self)._get_action_view_picking(pickings)
-
-        if pickings:
-            for picking in pickings:
-                if picking.state in ('draft', 'waiting', 'confirmed', 'confirmed'):
-                    picking.update({'picking_type_id': self.picking_type_id.id})
-        return result
-
