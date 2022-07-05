@@ -39,12 +39,21 @@ class SaleOrder(models.Model):
 
         if pickings:
             for picking in pickings:
+                driver = carrier = bol = lift_datetime = None
                 if not picking.driver_id:
-                    picking.write({'driver_id': self.driver_id.id})
+                    driver = self.driver_id.id
                 if not picking.carrier_id:
-                    picking.write({'carrier_id': self.carrier_id.id})
+                    carrier = self.carrier_id.id
                 if not picking.bol_ref:
-                    picking.write({'bol_ref': self.bol_ref})
+                    bol = self.bol_ref
+                if not picking.lift_datetime:
+                    lift_datetime = self.commitment_date
+                picking.write({
+                    'driver_id': driver,
+                    'carrier_id': carrier,
+                    'bol_ref': bol,
+                    'lift_datetime': lift_datetime
+                })
         return result
 
 
@@ -61,7 +70,6 @@ class SaleOrder(models.Model):
             for line in order.order_line:
                 qty += line.product_uom_qty
             order.update({'total_qty': qty})
-
 
 
 
