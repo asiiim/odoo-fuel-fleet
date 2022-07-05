@@ -21,7 +21,7 @@
 
     'data': [
         'views/stock_picking.xml',
-        'views/stock_move_line.xml',
+        # 'views/stock_move_line.xml',
     ],
 
     'application': True
