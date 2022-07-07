@@ -19,7 +19,6 @@ class PurchaseOrder(models.Model):
     lift_datetime = fields.Datetime(
         string="Lift Date & Time", index=True, copy=False, tracking=True
     )
-    # date_planned = fields.Datetime(default=fields.Datetime.now)
 
     @api.onchange("lift_datetime", "partner_id", "terminal_id")
     def update_price_unit(self):
@@ -49,7 +48,6 @@ class PurchaseOrder(models.Model):
                 "bol_ref": self.bol_ref,
             }
         )
-
         return invoice_vals
 
     # Check the liftdatetime if set while confirming the RFQ into Purchase Order
@@ -91,6 +89,18 @@ class PurchaseOrderLine(models.Model):
     realtime_cost = fields.Many2one(
         "product.realtime.cost", compute="get_realtime_cost", store=True
     )
+
+    # Override create method to check date_planned in vals
+    # If not found set current datetime in that field.
+    @api.model_create_multi
+    def create(self, vals_list):
+        for values in vals_list:
+            if not 'date_planned' in values or not values['date_planned']:
+                values.update({'date_planned': fields.Datetime.now()})
+            
+        lines = super().create(vals_list)
+        return lines
+
 
     @api.depends(
         "product_id",
