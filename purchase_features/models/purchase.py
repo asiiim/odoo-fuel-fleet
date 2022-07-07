@@ -46,6 +46,8 @@ class PurchaseOrder(models.Model):
                 "invoice_date": self.lift_datetime,
                 # Add BOL to the Vendor Bill
                 "bol_ref": self.bol_ref,
+                "driver_id": self.driver_id,
+                "carrier_id": self.carrier_id
             }
         )
         return invoice_vals
