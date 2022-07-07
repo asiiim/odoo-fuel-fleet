@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_customer_price_ruless_tree" model="ir.ui.view">
+        <field name="name">customer.price.rule.tree</field>
+        <field name="model">customer.price.rule</field>
+        <field name="priority">2</field>
+        <field name="arch" type="xml">
+            <tree string="Customer Price Rules" multi_edit="1" sample="1">
+                <field name="name" decoration-bf="1"/>
+                <field name="partner_id"/>
+                <field name="hierarchy"/>
+                <field name="terminal_id"/>
+                <field name="product_categ_id"/>
+                <field name="addtional_price"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_customer_price_ruless_form" model="ir.ui.view">
+        <field name="name">customer.price.rule.form</field>
+        <field name="model">customer.price.rule</field>
+        <field name="arch" type="xml">
+            <form string="Customer Price Rules">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group name="header">
+                        <group name="customer_price_rules_basic">
+                            <field name="partner_id"/>
+                            <field name="hierarchy"/>
+                        </group>
+                        <group name="customer_price_rules_address">
+                            <field name="terminal_id"/>
+                            <field name="product_categ_id"/>
+                            <field name="addtional_price"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="action_customer_price_rule" model="ir.actions.act_window">
+        <field name="name">Customer Price Rules</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">customer.price.rule</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Customer Price Rule!
+            </p>
+        </field>
+    </record>
+    <record id="customer_price_ruless_action_view_order_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_customer_price_ruless_tree"/>
+        <field name="act_window_id" ref="action_customer_price_rule"/>
+    </record>
+    <record id="customer_price_ruless_action_view_order_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_customer_price_ruless_form"/>
+        <field name="act_window_id" ref="action_customer_price_rule"/>
+    </record>
+</odoo>
