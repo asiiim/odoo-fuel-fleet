@@ -47,7 +47,7 @@ class PurchaseOrder(models.Model):
                 # Add BOL to the Vendor Bill
                 "bol_ref": self.bol_ref,
                 "driver_id": self.driver_id,
-                "carrier_id": self.carrier_id
+                "carrier_id": self.carrier_id,
             }
         )
         return invoice_vals
@@ -97,12 +97,11 @@ class PurchaseOrderLine(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for values in vals_list:
-            if not 'date_planned' in values or not values['date_planned']:
-                values.update({'date_planned': fields.Datetime.now()})
-            
+            if not "date_planned" in values or not values["date_planned"]:
+                values.update({"date_planned": fields.Datetime.now()})
+
         lines = super().create(vals_list)
         return lines
-
 
     @api.depends(
         "product_id",

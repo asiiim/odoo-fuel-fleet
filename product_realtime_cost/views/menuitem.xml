@@ -3,12 +3,12 @@
 
     <menuitem id="menu_terminals"
         name="Terminals"
-        parent="purchase.menu_purchase_root"
-        action="purchase_features.action_terminals"
+        parent="stock.menu_stock_inventory_control"
+        action="product_realtime_cost.action_terminals"
         sequence="10"/>
     <menuitem id="menu_realtime_cost"
         name="Product Realtime Cost"
-        parent="purchase.menu_purchase_root"
-        action="purchase_features.action_product_realtime_cost"
+        parent="stock.menu_stock_inventory_control"
+        action="product_realtime_cost.action_product_realtime_cost"
         sequence="15"/>
 </odoo>

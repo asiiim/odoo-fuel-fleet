@@ -1,4 +1,1 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_terminal_user,access_terminal_user,model_fuel_terminal,purchase.group_purchase_user,1,1,1,1
-access_product_realtime_cost_user,access_product_realtime_cost_user,model_product_realtime_cost,purchase.group_purchase_user,1,1,1,1
-access_product_realtime_cost_line_user,access_product_realtime_cost_line_user,model_product_realtime_cost_line,purchase.group_purchase_user,1,1,1,1

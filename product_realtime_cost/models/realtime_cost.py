@@ -73,7 +73,6 @@ class ProductRealtimeCostLine(models.Model):
     product_id = fields.Many2one(
         "product.product",
         string="Product",
-        domain=[("purchase_ok", "=", True)],
         change_default=True,
         tracking=True,
     )
