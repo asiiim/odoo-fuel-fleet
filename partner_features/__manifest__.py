@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 {
-    "name": "Sales Price",
+    "name": "Partner Features",
     "summary": """
-        Get computed price for sales order lines.
+        Add features in purchase document.
     """,
     "description": """
         Features:
-        \n- Get price from the product realtime cost register for dropshipping.
+        \n- Add boolean fields: is_driver and is_carrier
     """,
     "sequence": "1",
     "author": "Aashim Bajracharya",
     "website": "https://www.linkedin.com/in/aashim-bajracharya-860406181/",
-    "category": "Sale",
-    "version": "15.0.0.0.1",
+    "category": "Partner",
+    "version": "14.0.0.0.1",
     "depends": [
-        "sale_features",
+        "contacts",
     ],
     "data": [
-        "views/sale.xml",
+        "views/res_partner.xml",
     ],
     "application": True,
 }

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-    <menuitem id="menu_customer_price_rule"
-        name="Customer Price Rule"
-        parent="sale.sale_menu_root"
-        action="sales_price.action_customer_price_rule"
-        sequence="10"/>
-</odoo>

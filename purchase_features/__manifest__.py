@@ -20,6 +20,7 @@
     "version": "14.0.0.0.3",
     "depends": [
         "product_realtime_cost",
+        "partner_features",
         "purchase_stock",
         "account",
         "purchase_requisition",
@@ -27,7 +28,6 @@
     "data": [
         # "security/ir.model.access.csv",
         "data/ir_sequence_data.xml",
-        "views/res_partner.xml",
         "views/purchase.xml",
         "views/purchase_requisition.xml",
         "views/vendor_bill.xml",

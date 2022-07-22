@@ -15,6 +15,7 @@
     "version": "14.0.0.0.1",
     "depends": [
         "product_realtime_cost",
+        "partner_features"
     ],
     "data": [
         "views/stock_picking.xml",

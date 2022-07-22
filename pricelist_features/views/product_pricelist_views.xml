@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit product pricelist item form view -->
+    <record id="product_pricelist_item_form_view_inherit" model="ir.ui.view">
+        <field name="name">Inherit Pricelist Item Form View</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="inherit_id" ref="product.product_pricelist_item_form_view"/>
+        <field name="arch" type="xml">
+            <field name="min_quantity" position="before">
+                <field name="supplier_id"/>
+                <field name="terminal_id"/>
+                <field name="partner_shipping_id"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Inherit product pricelist form view -->
+    <record id="product_pricelist_view_inherit" model="ir.ui.view">
+        <field name="name">Inherit Pricelist Form View</field>
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='item_ids']" position="attributes">
+                <attribute name="context">{'default_base':'index_ref'}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
