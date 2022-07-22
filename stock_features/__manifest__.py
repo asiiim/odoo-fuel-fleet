@@ -14,11 +14,10 @@
     "category": "Stock",
     "version": "14.0.0.0.1",
     "depends": [
-        "purchase_features",
+        "product_realtime_cost",
     ],
     "data": [
         "views/stock_picking.xml",
-        # 'views/stock_move_line.xml',
     ],
     "application": True,
 }
